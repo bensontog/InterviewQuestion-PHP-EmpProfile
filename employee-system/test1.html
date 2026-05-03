@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	  <title>Employee Registration</title>
+	  <link rel="stylesheet" href="styles.css">
+	</head>
+	
+	<body class="page-form">
+
+		<div class="container">
+			<h2>Employee Registration</h2>
+
+			<form id="empForm">
+
+				<div class="form-group">
+					<label>Employee Name</label>
+					<input name="name" required minlength="3">
+				</div>
+
+				<div class="form-group">
+					<label>Gender</label>
+					<select name="gender" required>
+						<option value="">Select Gender</option>
+						<option>Male</option>
+						<option>Female</option>
+					</select>
+				</div>
+
+				<div class="form-group">
+					<label>Marital Status</label>
+					<select name="maritalStatus" required>
+						<option value="">Select Status</option>
+						<option>Single</option>
+						<option>Married</option>
+					</select>
+				</div>
+
+				<div class="form-group">
+					<label>Phone Number</label>
+					<input name="phone" required pattern="^\d{10,15}$" title="Enter 10–15 digits only">
+				</div>
+
+				<div class="form-group">
+					<label>Email Address</label>
+					<input type="email" name="email" required>
+				</div>
+
+				<div class="form-group">
+					<label>Address</label>
+					<textarea name="address" required minlength="5"></textarea>
+				</div>
+
+				<div class="form-row">
+					<div class="form-group">
+						<label>Date of Birth</label>
+						<input type="date" name="dob" required>
+					</div>
+
+					<div class="form-group">
+						<label>Hire Date</label>
+						<input type="date" name="hireDate" required>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label>Nationality</label>
+					<input name="nationality" required>
+				</div>
+
+				<div class="form-group">
+					<label>Department</label>
+					<input name="department" required>
+				</div>
+
+				<div class="button-group">
+					<button type="submit">Add Employee</button>
+					<button type="button" onclick="goToList()">View Employees</button>
+				</div>
+
+			</form>
+		</div>
+
+		<script>
+		const form = document.getElementById("empForm");
+
+		function goToList() {
+			window.location.href = "employees.html";
+		}
+
+		form.addEventListener("submit", function(e) {
+			e.preventDefault();
+
+			if (!form.checkValidity()) {
+				form.reportValidity();
+				return;
+			}
+
+			const data = Object.fromEntries(new FormData(form));
+
+			fetch("http://localhost/employee-system/api/addEmployee.php", {
+				method: "POST",
+				headers: {"Content-Type": "application/json"},
+				body: JSON.stringify(data)
+			})
+			.then(res => res.json())
+			.then(res => {
+				if (res.success) {
+					alert("✅ Employee registered successfully!");
+					form.reset();
+				} else {
+					alert("❌ " + res.message);
+				}
+			});
+		});
+		</script>
+
+	</body>
+</html>
